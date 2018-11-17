@@ -1,9 +1,9 @@
 import numpy as np
 import pandas as pd
 import sys
-import matplotlib.pyplot as plt
 from math import sqrt
 
+# Method helper untuk mengecek apakah array1 sama dengan array2
 def is_equal(array1, array2):
     equal = True
     try:
@@ -15,17 +15,23 @@ def is_equal(array1, array2):
     except:
         return False
 
+# Menormalisasikan data dengan min-max norm
 def min_max_normalisasi(data) :
     for i in range(0,4) :
         v = data[:,i]
         data[:, i] = (v - v.min()) / (v.max() - v.min())
 
+# Jarak Euclidean
+# Menghitung jarak antara 2 titik
+# Input koordinat data1 dan data2
 def distance(data1, data2):
     sum = 0
     for i in range(0, len(data1)):
         sum += abs( data1[i] - data2[i] )
     return sqrt(sum)
 
+# Mencari centroid dari data pada cluster tertentu
+# input berupa array 2 dimensi, dimensi 1 koordinat 1 titik, dimensi 2 kumpulan titk titik
 def centroid(data_array):
     count_data = len( data_array )
     count_column = len( data_array[0] )
@@ -36,8 +42,10 @@ def centroid(data_array):
         centroid.append(mean)
     return centroid
 
+# Mendapatkan semua centroid dari semua cluster
+# input array 3 dimensi
 def get_centroids(data_array):
-    centroids = []
+    centroids = [] # Inisialisasi array kosong untuk hasil centroid nanti
     for i in range(0, len(data_array)):
         centroids.append( centroid( data_array[i] ) )
     return centroids
@@ -70,11 +78,11 @@ def main() :
     # STEP 3 : HITUNG MASING MASING CLUSTER
     w, h = 0, N
     result_clustering = [[0 for x in range(w)] for y in range(h)] 
-
     max_loop = 10
     loop = 0
     moving = True
     last_data_cluster = np.copy( data_cluster )
+    # Lakukan perulangan terus jika last_data_cluster tidak sama dengan data_cluster
     while moving :
         w, h = 0, N
         result_clustering = [[0 for x in range(w)] for y in range(h)] 
@@ -82,6 +90,8 @@ def main() :
         last_data_cluster = np.copy( data_cluster )
         w, h = 0, N
         data_cluster = [[np.array([]) for x in range(w)] for y in range(h)]
+
+        # Mengclustering
         for i in range(0, N_data):
             distances = []
             for j in range( 0, len( centroids ) ) :
@@ -91,12 +101,16 @@ def main() :
             data_cluster[cluster].append( data[i] )
 
         loop += 1
+        # Cek apakah ada perubahan data
         if is_equal(last_data_cluster , data_cluster) or loop >= max_loop:
             moving = False
 
+        # Cetak hasil clustering tiap loop
         print("Loop", loop,":")
         for i in range(0, N):
             print("Data pada cluster ",i+1,result_clustering[i])
+
+    # STEP 4 : Hasil Akhir
     print("\n==== HASIL AKHIR ====")
     for i in range(0, N):
             print("Data pada cluster ",i+1,result_clustering[i])
