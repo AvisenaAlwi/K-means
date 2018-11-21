@@ -27,7 +27,7 @@ def min_max_normalisasi(data) :
 def distance(data1, data2):
     sum = 0
     for i in range(0, len(data1)):
-        sum += abs( data1[i] - data2[i] )
+        sum += ( abs( data1[i] - data2[i] ) ) ** 2
     return sqrt(sum)
 
 # Mencari centroid dari data pada cluster tertentu
